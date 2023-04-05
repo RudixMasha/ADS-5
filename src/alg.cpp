@@ -17,12 +17,12 @@ std::string infx2pstfx(std::string inf) {
   std::string resl = "";
   std::string outp;
   for (int i = 0; i < inf.length(); i++) {
-    if (isd(inf[i])) {
+    if (isdigit(inf[i])) {
       resl += inf[i];
     } else {
       if (resl.length() > 0) {
         outp += resl;
-        outp = " ";
+        outp += " ";
         resl = "";
       }
       if ((!priora) ||
@@ -55,7 +55,7 @@ std::string infx2pstfx(std::string inf) {
   }
   while (!stack1.empty()) {
     outp += stack1.pop();
-    if (!stack1.empty()) outp += " "
+    if (!stack1.empty()) outp += " ";
   }
   return outp;
 }
@@ -63,7 +63,7 @@ std::string infx2pstfx(std::string inf) {
 int eval(std::string pref) {
   TStack<int> stack2;
     for (int i = 0; i < pref.length(); i+=2) {
-        if (isd(pref[i])) {
+        if (isdigit(pref[i])) {
             stack2.push(pref[i]);
         } else {
             int b = stack2.get();
