@@ -4,12 +4,15 @@
 #include "tstack.h"
 
 int priora(char x) {
-    if (x == '(') return 0;
-    else if (x == ')') return 1;
-    else if (x == '-' || x == '+') return 2;
-    else if (x == '/' || x == '*') return 3;
-    else
-        return -1;
+    switch (x) {
+      case('('): return 0;
+      case(')'): return 1;
+      case('+'): return 2;
+      case('-'): return 2;
+      case('*'): return 3;
+      case('/'): return 3;
+  }
+  return -1;
 }
 
 std::string infx2pstfx(std::string inf) {
@@ -27,7 +30,7 @@ std::string infx2pstfx(std::string inf) {
       }
       if ((!priora) ||
           priora(inf[i]) > priora(stack1.get()) ||
-          stack1.empty()) {
+          stack1.isempty()) {
         stack1.push(inf[i]);
       } else {
         if (priora(inf[i]) == 1) {
@@ -38,7 +41,7 @@ std::string infx2pstfx(std::string inf) {
             c = stack1.pop();
           }
         } else {
-          while (!stack1.empty() &&
+          while (!stack1.isempty() &&
                  priora(inf[i]) <= priora(stack1.get())) {
             outp += stack1.pop();
             outp += " ";
@@ -53,9 +56,9 @@ std::string infx2pstfx(std::string inf) {
     outp += " ";
     resl = "";
   }
-  while (!stack1.empty()) {
+  while (!stack1.isempty()) {
     outp += stack1.pop();
-    if (!stack1.empty()) outp += " ";
+    if (!stack1.isempty()) outp += " ";
   }
   return outp;
 }
