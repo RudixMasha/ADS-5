@@ -3,81 +3,98 @@
 #include <map>
 #include "tstack.h"
 
-int priora(char x) {
-    switch (x) {
-      case('('): return 0;
-      case(')'): return 1;
-      case('+'): return 2;
-      case('-'): return 2;
-      case('*'): return 3;
-      case('/'): return 3;
+int Priorit(char x) {
+  switch (x) {
+    case '(':
+      return 0;
+    case ')':
+      return 1;
+    case '+': case '-':
+      return 2;
+    case '*': case '/':
+      return 3;
+    default:
+      return -1;
+    }
+}
+
+int sche(const int& p, const int& v, const int& x) {
+  switch (x) {
+    case '+':
+      return p + v;
+    case '-':
+      return p - v;
+    case '/':
+      return p / v;
+    case '*':
+      return p * v;
+    default:
+      return 0;
   }
-  return -1;
 }
 
 std::string infx2pstfx(std::string inf) {
-  TStack<char, 100> stack1;
-  std::string resl = "";
-  std::string outp;
-  for (int i = 0; i < inf.length(); i++) {
-    if (isdigit(inf[i])) {
-      resl += inf[i];
+  std::string rez, rez1;
+  TStack<char, 100>stack1;
+  for (auto& x : inf) {
+    int p = Priorit(x);
+    if (p == -1) {
+      rez = rez + x + ' ';
     } else {
-      if (resl.length() > 0) {
-        outp += resl;
-        outp += " ";
-        resl = "";
-      }
-      if ((!priora) ||
-          priora(inf[i]) > priora(stack1.get()) ||
-          stack1.isempty()) {
-        stack1.push(inf[i]);
+      char elemt = stack1.get();
+      if (p == 0 || Priorit(elemt) < p || stack1.isEmpty()) {
+        stack1.push(x);
       } else {
-        if (priora(inf[i]) == 1) {
-          char c = stack1.pop();
-          while (c != '(') {
-            outp += c;
-            outp += " ";
-            c = stack1.pop();
+        if (x == ')') {
+          while (Priorit(elemt) >= p) {
+            rez = rez + elemt + ' ';
+            stack1.pop();
+            elemt = stack1.get();
           }
+          stack1.pop();
         } else {
-          while (!stack1.isempty() &&
-                 priora(inf[i]) <= priora(stack1.get())) {
-            outp += stack1.pop();
-            outp += " ";
+          while (Priorit(elemt) >= p) {
+            rez = rez + elemt + ' ';
+            stack1.pop();
+            elemt = stack1.get();
           }
-          stack1.push(inf[i]);
+          stack1.push(x);
         }
       }
     }
   }
-  if (resl.length() > 0) {
-    outp += resl;
-    outp += " ";
-    resl = "";
+  while (!stack1.isEmpty()) {
+    rez = rez + stack1.get() + ' ';
+    stack1.pop();
   }
-  while (!stack1.isempty()) {
-    outp += stack1.pop();
-    if (!stack1.isempty()) outp += " ";
-  }
-  return outp;
+  for (int i = 0; i < rez.size() - 1; i++)
+    rez1 += rez[i];
+  return rez1;
 }
 
 int eval(std::string pref) {
-    TStack<int, 100> stack2;
-    for (int i = 0; i < pref.length(); i+=2) {
-        if (isdigit(pref[i])) {
-      stack2.push(pref[i]);
+  TStack<int, 100> stack1;
+  std::string rez = "";
+  for (int i = 0; i < pref.size(); i++) {
+    char elemt = pref[i];
+    if (Priorit(elemt) == -1) {
+      if (pref[i] == ' ') {
+        continue;
+      } else if (isdigit(pref[i+1])) {
+        rez += pref[i];
+        continue;
+      } else {
+        rez += pref[i];
+        stack1.push(atoi(rez.c_str()));
+        rez = "";
+      }
     } else {
-      int t2 = stack2.get();
-      stack2.pop();
-      int t1 = stack2.get();
-      stack2.pop();
-      if (pref[i] == '+') stack2.push(t1 + t2);
-      if (pref[i] == '-') stack2.push(t1 - t2);
-      if (pref[i] == '*') stack2.push(t1 * t2);
-      if (pref[i] == '/') stack2.push(t1 / t2);
+      int v = stack1.get();
+      stack1.pop();
+      int p = stack1.get();
+      stack1.pop();
+      stack1.push(sche(p, v, elemt));
     }
   }
-  return stack2.get();
+  return stack1.get();
 }
