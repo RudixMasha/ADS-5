@@ -64,25 +64,20 @@ std::string infx2pstfx(std::string inf) {
 }
 
 int eval(std::string pref) {
-  TStack<int> stack2;
+    TStack<int, 100> stack2;
     for (int i = 0; i < pref.length(); i+=2) {
         if (isdigit(pref[i])) {
-            stack2.push(pref[i]);
-        } else {
-            int b = stack2.get();
-            stack2.pop();
-            int a = stack2.get();
-            stack2.pop();
-            if (pref[i] == '+') {
-                stack2.push(a + b);
-            } else if (pref[i] == '-') {
-                stack2.push(a - b);
-            } else if (pref[i] == '*') {
-                stack2.push(a * b);
-            } else if (pref[i] == '/') {
-                stack2.push(a / b);
-            }
-        }
+      stack2.push(pref[i]);
+    } else {
+      int t2 = stack2.get();
+      stack2.pop();
+      int t1 = stack2.get();
+      stack2.pop();
+      if (pref[i] == '+') stack2.push(t1 + t2);
+      if (pref[i] == '-') stack2.push(t1 - t2);
+      if (pref[i] == '*') stack2.push(t1 * t2);
+      if (pref[i] == '/') stack2.push(t1 / t2);
     }
-    return stack2.get();
+  }
+  return stack2.get();
 }
