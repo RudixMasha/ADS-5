@@ -17,11 +17,11 @@ int oper(char x) {
             || x == '*' || x == '/');
 }
 
-int num(char x) {
+int numb(char x) {
     return (x >= '0' && x <= '9');
 }
 
-int conv(char x) {
+int con(char x) {
     char mas[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     for (int i = 0; i < 10; i++) {
         if (x == mas[i])
@@ -34,7 +34,7 @@ std::string infx2pstfx(std::string inf) {
     TStack<char>  stack1;
     std::string str = "";
     for (int i = 0; i < inf.length(); i++) {
-        if (num(inf[i])) {
+        if (numb(inf[i])) {
             str += inf[i];
             str += " ";
         } else if (inf[i] == '(') {
@@ -68,8 +68,8 @@ std::string infx2pstfx(std::string inf) {
 int eval(std::string pref) {
     TStack<int> stack2;
     for (int i = 0; i < pref.length(); i+=2) {
-        if (num(pref[i])) {
-            stack2.push(conv(pref[i]));
+        if (numb(pref[i])) {
+            stack2.push(con(pref[i]));
         } else if (oper(pref[i])) {
             int b = stack2.get();
             stack2.pop();
